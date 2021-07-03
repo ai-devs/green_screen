@@ -3,8 +3,12 @@ import cv2
 # open the video
 video = cv2.VideoCapture('resources/video.mp4')
 
+
 _, frame = video.read()
 h,w = frame.shape[0:2]
+
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+writer = cv2.VideoWriter('output.avi', fourcc, 30.0, (w,  h))
 
 background = cv2.imread('resources/bg.jpg')
 background = cv2.resize(background,(w,h),None,None,None,cv2.INTER_LANCZOS4)
@@ -39,6 +43,9 @@ while True:
     # combine both images into frame
     frame = cv2.bitwise_and(bg,frame)
 
+    # Write frame to video file (output.avi)
+    writer.write(frame)
+
     # show frames
     cv2.imshow('b',b)
     cv2.imshow('g',g)
@@ -50,7 +57,8 @@ while True:
     # Wait 30 miliseconds per frame to display the video with normal speed
     k = cv2.waitKey(30)
 
-# Destroy all windows and release video capture instance
+# Destroy all windows and release video capture and writer instances
 cv2.destroyAllWindows()
 cv2.waitKey(1)
+writer.release()
 video.release()
